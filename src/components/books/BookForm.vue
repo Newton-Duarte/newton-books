@@ -16,7 +16,6 @@
 
   <v-text-field
     v-model="item.subtitle"
-    :rules="subtitleRules"
     label="Subtítulo"
     placeholder="exemplo: A busca da verdade"
     required
@@ -60,12 +59,13 @@
   </v-layout>
 
   <v-btn 
+    :disabled="!valid"
     block 
     large
     color="primary"
     class="mb-3"
     :loading="loading"
-    @click="$emit('saveBook', item)"
+    @click="saveBook"
   >
     Confirmar
   </v-btn>
@@ -103,9 +103,6 @@ export default {
     titleRules: [
       v => !!v || 'O título do livro é obrigatório.',
     ],
-    subtitleRules: [
-      v => !!v || 'O subtítulo do livro é obrigatório.',
-    ],
     authorRules: [
       v => !!v || 'O autor do livro é obrigatório.',
     ],
@@ -114,8 +111,13 @@ export default {
     ],
   }),
   methods: {
+    saveBook() {
+      if (this.$refs.form.validate()) {
+        this.$emit('saveBook', this.item);
+      }
+    },
     addReadPages(val) {
-      if (this.item.readPages + val > this.item.pages) {
+      if ((this.item.readPages + val) > this.item.pages) {
         this.item.readPages = this.item.pages;
       } else {
         this.item.readPages += val;

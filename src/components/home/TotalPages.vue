@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mt-3">
+  <v-card class="mt-3" to="/pages">
     <v-list-item three-line>
       <v-flex xs9>
         <v-list-item-content class="align-self-start">

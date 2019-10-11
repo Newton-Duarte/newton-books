@@ -3,7 +3,7 @@ export default class Book {
     title = '',
     subtitle = '',
     author = '',
-    pages = 0,
+    pages = '',
     readPages = 0,
     reading = false,
     read = false,

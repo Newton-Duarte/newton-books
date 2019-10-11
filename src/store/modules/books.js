@@ -77,6 +77,7 @@ const actions = {
     book.readPages = Number(book.readPages);
     if (book.readPages === book.pages) {
       book.read = true;
+      book.reading = false;
     } else {
       book.read = false;
     }

@@ -35,9 +35,21 @@ export default {
         const today = new Date().toISOString().substr(0,10);
         return new Date(p.date).toISOString().substr(0,10) == today;
       });
-      if (this.filter == 'week') return this.allPages.filter(p => p.reading);
-      if (this.filter == 'month') return this.allPages.filter(p => p.favorite);
-      if (this.filter == 'year') return this.allPages.filter(p => p.favorite);
+      if (this.filter == 'week') {
+        let fdow = this.moment().startOf('week'); // First day of the week
+        let ldow = this.moment().endOf('week');  // Last day of the week
+        return this.allPages.filter(p => this.moment(p.date).isBetween(fdow, ldow));
+      }
+      if (this.filter == 'month') {
+        let fdom = this.moment().startOf('month');
+        let ldom = this.moment().endOf('month');
+        return this.allPages.filter(p => this.moment(p.date).isBetween(fdom, ldom));
+      }
+      if (this.filter == 'year') {
+        let fdoy = this.moment().startOf('year');
+        let ldoy = this.moment().endOf('year');
+        return this.allPages.filter(p => this.moment(p.date).isBetween(fdoy, ldoy));
+      }
     }
   },
   methods: {

@@ -5,10 +5,13 @@ import store from './store'
 import './registerServiceWorker'
 import vuetify from './plugins/vuetify';
 import { auth } from '@/firebase/init'
+import moment from 'moment';
 
 let app = null;
 
 Vue.config.productionTip = false
+moment.locale('pt-br');
+Vue.prototype.moment = moment;
 
 // wait for firebase auth to init before creating the app
 

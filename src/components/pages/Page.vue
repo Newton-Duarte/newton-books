@@ -9,7 +9,7 @@
 
           <v-list-item-subtitle class="py-1 text--primary">
             <v-icon small>access_time</v-icon>
-            {{ dateToText(page.date) }}
+            {{ moment(page.date).format('DD [de] MMMM [de] YYYY [às] HH:mm') }}
           </v-list-item-subtitle>
           <v-list-item-subtitle>
             <v-icon small>library_books</v-icon>
@@ -56,14 +56,6 @@ export default {
         this.loading = false;
       }
     },
-    dateToText(date) {
-      const dd = new Date(date);
-      const d = dd.toISOString().substr(0,10).split('-').reverse().join('/');
-      // const time = dd.toLocaleString().substr(11,4);
-      const time = `${dd.getHours()}:${dd.getMinutes()}`;
-
-      return `${d} ${time}`;
-    }
   }
 }
 </script>
