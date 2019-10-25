@@ -17,7 +17,7 @@
     >
       <v-list-item>
         <v-list-item-avatar>
-          <v-img src="https://randomuser.me/api/portraits/men/78.jpg"></v-img>
+          <v-img :src="profileImage"></v-img>
         </v-list-item-avatar>
 
         <v-list-item-content>
@@ -79,7 +79,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['user'])
+    ...mapGetters(['user', 'profileImage'])
   },
 }
 </script>
