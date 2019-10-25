@@ -2,9 +2,7 @@
   <v-container>
     <v-layout>
       <v-flex xs5>
-        <v-avatar color="orange" size="100">
-          <span class="white--text headline">62</span>
-        </v-avatar>
+        <Uploader :imageUrl="profileImage" />
       </v-flex>
       <v-flex xs7>
         <h3>{{ user.displayName }}</h3>
@@ -35,23 +33,26 @@ import { mapGetters, mapActions } from 'vuex';
 import TotalBooks from '@/components/home/TotalBooks';
 import TotalPages from '@/components/home/TotalPages';
 import FavoriteBooks from '@/components/home/FavoriteBooks';
+import Uploader from '@/components/home/Uploader';
 
 export default {
   name: 'Home',
   components: {
     TotalBooks,
     TotalPages,
-    FavoriteBooks
+    FavoriteBooks,
+    Uploader
   },
   methods: {
-    ...mapActions(['fetchBooks', 'fetchPages'])
+    ...mapActions(['fetchBooks', 'fetchPages', 'fetchProfileImage'])
   },
   computed: {
-    ...mapGetters(['user', 'totalBooks', 'totalReadingBooks', 'totalReadBooks', 'allPages'])
+    ...mapGetters(['user', 'totalBooks', 'totalReadingBooks', 'totalReadBooks', 'allPages', 'profileImage'])
   },
   async created() {
     await this.fetchBooks(this.user.uid);
     await this.fetchPages(this.user.uid);
+    await this.fetchProfileImage(this.user.uid);
   }
 };
 </script>
