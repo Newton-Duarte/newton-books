@@ -2,10 +2,10 @@
   <v-container>
     <v-layout>
       <v-flex xs5>
-        <Uploader :imageUrl="profileImage" />
+        <Uploader />
       </v-flex>
       <v-flex xs7>
-        <h3>{{ user.displayName }}</h3>
+        <h3 v-if="user">{{ user.name }}</h3>
         <v-layout mt-3>
           <v-flex xs4>
             <p class="title ma-0">{{ totalBooks }}</p>
@@ -44,15 +44,14 @@ export default {
     Uploader
   },
   methods: {
-    ...mapActions(['fetchBooks', 'fetchPages', 'fetchProfileImage'])
+    ...mapActions(['fetchBooks', 'fetchPages'])
   },
   computed: {
-    ...mapGetters(['user', 'totalBooks', 'totalReadingBooks', 'totalReadBooks', 'allPages', 'profileImage'])
+    ...mapGetters(['user', 'totalBooks', 'totalReadingBooks', 'totalReadBooks', 'allPages'])
   },
   async created() {
-    await this.fetchBooks(this.user.uid);
-    await this.fetchPages(this.user.uid);
-    await this.fetchProfileImage(this.user.uid);
+    await this.fetchBooks(this.user.id);
+    await this.fetchPages(this.user.id);
   }
 };
 </script>

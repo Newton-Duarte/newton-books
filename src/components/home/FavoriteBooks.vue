@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="favoriteBooks.length">
     <v-subheader>Livros Favoritos</v-subheader>
       <Book 
         v-for="book in favoriteBooks" 

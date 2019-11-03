@@ -1,15 +1,25 @@
 <template>
   <v-avatar color="orange" size="100">
     <img
-      v-show="imageUrl" 
-      :src="imageUrl"
+      v-show="user.imageUrl" 
+      :src="user.imageUrl"
       @click="removePhoto"
     >
     <v-icon 
-      v-show="!imageUrl"
+      v-show="!user.imageUrl && !loading"
       dark 
       @click="onPickFile"
     >photo_camera</v-icon>
+    <v-btn
+      v-if="loading"
+      :loading="loading"
+      color="orange"
+      dark
+      depressed
+      light
+      small
+      fab
+    ></v-btn>
     <input
       type="file" 
       ref="fileInput" 
@@ -22,13 +32,12 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'Uploader',
-  props: ['imageUrl'],
   data: () => ({
-    // imageUrl: '',
+    imageUrl: '',
     image: null
   }),
   methods: {
@@ -39,7 +48,6 @@ export default {
     onFilePicked(event) {
       const files = event.target.files;
       let filename = files[0].name;
-      console.log(files[0].name.split('.').pop());
       if (filename.lastIndexOf('.') <= 0) {
         return alert('Arquivo inválido. Selecione um arquivo do tipo imagem.');
       }
@@ -56,6 +64,9 @@ export default {
         this.deleteImageProfile();
       }
     }
+  },
+  computed: {
+    ...mapGetters(['user', 'loading'])
   }
 }
 </script>

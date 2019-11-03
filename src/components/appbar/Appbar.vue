@@ -17,12 +17,12 @@
     >
       <v-list-item>
         <v-list-item-avatar>
-          <v-img :src="profileImage"></v-img>
+          <v-img :src="user.imageUrl"></v-img>
         </v-list-item-avatar>
 
         <v-list-item-content>
           <v-list-item-title>
-            {{ user.displayName }}
+            {{ user.name }}
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
@@ -79,7 +79,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['user', 'profileImage'])
+    ...mapGetters(['user'])
   },
 }
 </script>

@@ -47,7 +47,7 @@ export default {
     }
   },
   async created() {
-    await this.fetchBooks(this.user.uid);
+    await this.fetchBooks(this.user.id);
   }
 }
 </script>

@@ -6,7 +6,7 @@
     <v-form 
       ref="form"
       v-model="valid"
-      validate-on-blur
+      lazy-validation
       class="mt-5"
     >
 
@@ -34,6 +34,7 @@
       label="Senha"
       outlined
       required
+      @keyup.enter="register"
     ></v-text-field>
 
     <v-btn 
@@ -42,20 +43,26 @@
       :loading="loading"
       color="primary" 
       block
-    >Confirmar</v-btn>
+    >
+      Confirmar
+    </v-btn>
   </v-form>
+  <Feedback />
 </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
+import Feedback from '@/components/shared/Feedback';
 import User from '@/models/User';
 
 export default {
   name: 'SignupForm',
+  components: {
+    Feedback
+  },
   data: () => ({
     valid: true,
-    loading: false,
     user: new User(),
     password: '',
     nameRules: [
@@ -73,21 +80,16 @@ export default {
   }),
   methods: {
     ...mapActions(['createUser']),
-    async register () {
+    register () {
       if (this.$refs.form.validate()) {
-        this.loading = true;
         this.user.password = this.password;
-        try {
-          await this.createUser(this.user);
-          this.$refs.form.reset();
-          this.loading = false;
-          this.$router.replace({ name: 'home' });
-        } catch (error) {
-          this.loading = false;
-          console.log(error);
-        }
+        this.createUser(this.user)
+          .then(() => this.$router.replace('/home'));
       }
     },
+  },
+  computed: {
+    ...mapGetters(['loading'])
   }
 }
 </script>

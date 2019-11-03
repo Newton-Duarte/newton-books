@@ -8,6 +8,7 @@
         v-model="valid"
         lazy-validation
         class="mt-5"
+        @submit.prevent="login"
       >
       <v-text-field
         type="email"
@@ -25,6 +26,7 @@
         label="Senha"
         outlined
         required
+        @keyup.enter="login"
       ></v-text-field>
 
       <v-btn 
@@ -37,6 +39,7 @@
         Entrar
       </v-btn>
     </v-form>
+    <Feedback />
     <div class="mt-5">
       <router-link to="forgot-password">Esqueceu a senha?</router-link>
     </div>
@@ -44,15 +47,19 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
+import Feedback from '@/components/shared/Feedback';
 
 export default {
   name: 'LoginForm',
+  components: {
+    Feedback
+  },
   data: () => ({
     valid: true,
-    loading: false,
     email: '',
     password: '',
+    feedback: '',
     emailRules: [
       v => !!v || 'Informe o E-mail',
       v => /.+@.+\..+/.test(v) || 'E-mail inválido.',
@@ -64,19 +71,16 @@ export default {
   }),
   methods: {
     ...mapActions(['loginUser']),
-    async login () {
+    login () {
       if (this.$refs.form.validate()) {
-        this.loading = true;
-        try {
-          await this.loginUser({ email: this.email, password: this.password });
-          this.loading = false;
-          this.$router.replace({ name: 'home' });
-        } catch (error) {
-          this.loading = false;
-          console.log(error);
-        }
+        this.loginUser({ email: this.email, password: this.password })
+          .then(() => this.$router.replace('/home'))
+          .catch(error => console.error(error));
       }
     },
+  },
+  computed: {
+    ...mapGetters(['loading'])
   }
 }
 </script>

@@ -12,6 +12,7 @@
     label="Título"
     placeholder="exemplo: Turma da Mônica"
     required
+    autofocus
   ></v-text-field>
 
   <v-text-field
@@ -82,7 +83,6 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
 import Book from '@/models/Book';
 
 export default {
@@ -114,6 +114,7 @@ export default {
     saveBook() {
       if (this.$refs.form.validate()) {
         this.$emit('saveBook', this.item);
+        this.$refs.form.reset();
       }
     },
     addReadPages(val) {

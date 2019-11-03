@@ -60,7 +60,7 @@ export default {
     }
   },
   async created() {
-    await this.fetchPages(this.user.uid);
+    await this.fetchPages(this.user.id);
   }
 }
 </script>

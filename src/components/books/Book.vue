@@ -15,7 +15,7 @@
 
         <v-flex xs3>
           <v-layout column align-center>
-            <v-icon large>menu_book</v-icon>
+            <v-icon large :color="book.read ? 'primary' : ''">menu_book</v-icon>
             <span class="caption">{{ book.pages }} páginas</span>
             <span class="caption font-italic">{{ book.readPages }} lidas</span>
           </v-layout>
@@ -27,7 +27,7 @@
             <v-btn @click.stop="favoriteBook(book)" text small fab icon>
               <v-icon :color="iconColorFavoriteBook(book.favorite)">{{ iconFavoriteBook(book.favorite) }}</v-icon>
             </v-btn>
-            <v-btn @click.stop="readBook(book)" text small fab icon>
+            <v-btn v-if="!book.read" @click.stop="readBook(book)" text small fab icon>
               <v-icon :color="iconColorReadingBook(book.reading)">menu_book</v-icon>
             </v-btn>
             <!-- <v-btn @click="checkBook(book)" small fab icon>
@@ -76,12 +76,12 @@ export default {
       if (!book.reading) {
         if (confirm(`Deseja marcar o livro: ${book.title} como lendo?`)) {
           book.reading = true;
-          this.updateBook({ book, uid: this.$store.getters.user.uid });
+          this.updateBook({ book, uid: this.$store.getters.user.id });
         }
       } else {
         if (confirm(`Deseja desmarcar o livro: ${book.title} como lendo?`)) {
           book.reading = false;
-          this.updateBook({ book, uid: this.$store.getters.user.uid });
+          this.updateBook({ book, uid: this.$store.getters.user.id });
         }
       }
     },
@@ -89,18 +89,18 @@ export default {
       if (!book.favorite) {
         if (confirm(`Deseja marcar o livro: ${book.title} como favorito?`)) {
           book.favorite = true;
-          this.updateBook({ book, uid: this.$store.getters.user.uid });
+          this.updateBook({ book, uid: this.$store.getters.user.id });
         }
       } else {
         if (confirm(`Deseja desmarcar o livro: ${book.title} como favorito?`)) {
           book.favorite = false;
-          this.updateBook({ book, uid: this.$store.getters.user.uid });
+          this.updateBook({ book, uid: this.$store.getters.user.id });
         }
       }
     },
     removeBook(book) {
       if (confirm(`Deseja excluir o livro: ${book.title}?`)) {
-        this.deleteBook({ book, uid: this.$store.getters.user.uid });
+        this.deleteBook({ book, uid: this.$store.getters.user.id });
       }
     },
     iconColorReadingBook(reading) {

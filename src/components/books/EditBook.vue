@@ -47,7 +47,7 @@ export default {
     ...mapActions(['updateBook']),
     async editBook() {
       this.loading = true;
-      await this.updateBook({ book: this.bookToEdit, uid: this.$store.getters.user.uid });
+      await this.updateBook({ book: this.bookToEdit, uid: this.$store.getters.user.id });
       this.loading = false;
       this.$emit('close');
     },

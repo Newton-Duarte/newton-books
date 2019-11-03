@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 import BookForm from '@/components/books/BookForm'
 
 export default {
@@ -53,7 +53,7 @@ export default {
     ...mapActions(['createBook']),
     async addBook(payload) {
       this.loading = true;
-      await this.createBook({ book: payload, uid: this.$store.getters.user.uid });
+      await this.createBook({ book: payload, uid: this.$store.getters.user.id });
       this.drawer = false;
       this.loading = false;
     },
