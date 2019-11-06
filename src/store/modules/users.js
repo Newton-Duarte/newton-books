@@ -97,7 +97,6 @@ const actions = {
         resolve(user);
       } catch (error) {
         commit('setLoading', false);
-        console.log(error.code);
         switch(error.code) {
           case 'auth/invalid-email':
             commit('setError', 'Usuário não encontrado, certifique-se que informou e-mail e senha válidos.');

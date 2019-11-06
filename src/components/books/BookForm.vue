@@ -114,7 +114,7 @@ export default {
     saveBook() {
       if (this.$refs.form.validate()) {
         this.$emit('saveBook', this.item);
-        this.$refs.form.reset();
+        // this.$refs.form.reset();
       }
     },
     addReadPages(val) {
