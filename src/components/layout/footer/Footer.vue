@@ -13,7 +13,7 @@
 export default {
   name: 'Footer',
   data: () => ({
-    version: '1.0.2'
+    version: '1.0.5'
   })
 }
 </script>
