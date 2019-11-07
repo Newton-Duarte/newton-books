@@ -18,20 +18,30 @@
     width="100%"
   >
     <v-list-item>
-      <v-list-item-content>
+      <v-list-item-content class="pa-0">
         <v-list-item-title class="font-weight-bold">Novo Livro</v-list-item-title>
       </v-list-item-content>
-      <v-flex xs9>
-        <v-text-field 
-          v-model="searchTerm"
-          prepend-icon="search" 
-          placeholder="Pesquisar no Google Books"
-          @keyup.enter.stop="searchGoogleBooks"
-          hint="Tecle Enter para pesquisar"
-          persistent-hint
-        ></v-text-field>
-      </v-flex>
+      <v-btn small fab icon @click="focusSearch">
+        <v-icon>search</v-icon>
+      </v-btn>
     </v-list-item>
+
+    <v-divider v-if="showSearch"></v-divider>
+
+    <v-row class="mx-4 mb-3" no-gutters v-if="showSearch">
+      <v-col>
+        <v-text-field 
+          id="google-search"
+          type="search"
+          v-model="searchTerm"
+          placeholder="Pesquisar no Google Books (Título)"
+          hint="Informe o título do livro ou parte dele e tecle Enter."
+          persistent-hint
+          clearable
+          @keyup.enter.stop="searchGoogleBooks"
+        ></v-text-field>
+      </v-col>
+    </v-row>
 
     <v-divider></v-divider>
 
@@ -62,6 +72,8 @@
       </v-list-item-group>
     </v-list>
 
+    <v-divider></v-divider>
+
     <BookForm 
       :item="book"
       @saveBook="addBook"
@@ -87,6 +99,7 @@ export default {
   data: () => ({
     drawer: false,
     loading: false,
+    showSearch: false,
     searchTerm: '',
     googleBooks: [],
     item: 0,
@@ -97,6 +110,10 @@ export default {
     async addBook(payload) {
       this.loading = true;
       await this.createBook({ book: payload, uid: this.$store.getters.user.id });
+      this.showSearch = false;
+      this.searchTerm = '';
+      this.googleBooks = [];
+      this.book = new Book();
       this.drawer = false;
       this.loading = false;
     },
@@ -125,6 +142,14 @@ export default {
     },
     clearGoogleBooks() {
       this.googleBooks = []
+    },
+    focusSearch() {
+      if (!this.showSearch) {
+        this.showSearch = true;
+        this.$nextTick(() => document.getElementById('google-search').focus());
+      } else {
+        this.showSearch = false;
+      }
     }
   },
 }

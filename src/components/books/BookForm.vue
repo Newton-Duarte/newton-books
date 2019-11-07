@@ -112,8 +112,9 @@ export default {
   methods: {
     saveBook() {
       if (this.$refs.form.validate()) {
-        this.$emit('saveBook', this.item);
-        // this.$refs.form.reset();
+        const newBook = Object.assign({}, this.item);
+        this.$emit('saveBook', newBook);
+        this.$refs.form.reset();
       }
     },
     addReadPages(val) {
