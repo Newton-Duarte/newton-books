@@ -12,7 +12,6 @@
     label="Título"
     placeholder="exemplo: Turma da Mônica"
     required
-    autofocus
   ></v-text-field>
 
   <v-text-field
