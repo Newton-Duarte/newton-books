@@ -62,6 +62,43 @@ const actions = {
     }
   },
 
+  async resetUserPassword({ commit }, email) {
+    commit('setLoading', true);
+    commit('clearError');
+    return new Promise(async (resolve, reject) => {
+      try {
+        await auth.sendPasswordResetEmail(email);
+        commit('setLoading', false);
+        commit('setError', 'Enviamos um e-mail com o endereço para recuperar sua senha.'); 
+        resolve('Enviamos um e-mail com o endereço para recuperar sua senha.')
+      } catch (error) {
+        switch(error.code) {
+          case 'auth/invalid-email':
+            commit('setError', 'Usuário não encontrado, certifique-se que informou e-mail e senha válidos.');
+            reject('Usuário não encontrado, certifique-se que informou e-mail e senha válidos.');
+            break;
+  
+          case 'auth/user-disabled':
+            commit('setError', 'Usuário desativado, entre em contato com o administrador do sistema.');
+            reject('Usuário não encontrado, certifique-se que informou e-mail e senha válidos.');
+            break;
+          
+          case 'auth/user-not-found':
+            commit('setError', 'Usuário não encontrado, certifique-se que informou e-mail e senha válidos.');
+            reject('Usuário não encontrado, certifique-se que informou e-mail e senha válidos.');
+            break;
+  
+          case 'auth/wrong-password':
+            commit('setError', 'Usuário não encontrado, certifique-se que informou e-mail e senha válidos.');
+            reject('Usuário não encontrado, certifique-se que informou e-mail e senha válidos.');
+            break;
+        }
+        commit('setLoading', false);
+        reject(error.code);
+      }
+    });
+  },
+
   async fetchCurrentUser({ commit }) {
     try {
       const user = auth.currentUser;

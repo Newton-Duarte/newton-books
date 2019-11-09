@@ -41,7 +41,7 @@
     </v-form>
     <Feedback />
     <div class="mt-5">
-      <router-link to="forgot-password">Esqueceu a senha?</router-link>
+      <router-link to="/password-reset">Esqueceu a senha?</router-link>
     </div>
   </div>
 </template>
