@@ -45,32 +45,46 @@
 
     <v-divider></v-divider>
 
-    <v-list dense v-if="googleBooks.length">
-      <v-row justify="space-between" no-gutters class="px-2">
-        <v-col>
-          <v-subheader>Google Books ({{ googleBooks.length }})</v-subheader>
-        </v-col>
-        <v-col class="text-right">
-          <v-btn small fab icon @click.stop="clearGoogleBooks">
-            <v-icon>close</v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
-      <v-list-item-group v-model="item" color="primary">
-        <v-list-item
-          v-for="(item, i) in googleBooks"
-          :key="i"
-          @click.stop="selectGoogleBook(item)"
-        >
-          <v-list-item-icon>
-            <v-icon>menu_book</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title"></v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
+    <v-row v-if="googleBooks.length">
+      <v-col cols="12" class="pb-0">
+        <v-list dense>
+          <v-row justify="space-between" no-gutters class="px-2">
+            <v-col>
+              <v-subheader>Google Books ({{ googleBooks.length }})</v-subheader>
+            </v-col>
+            <v-col class="text-right">
+              <v-btn small fab icon @click.stop="clearGoogleBooks">
+                <v-icon>close</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-list-item-group v-model="item" color="primary">
+            <v-list-item
+              v-for="(item, i) in googleBooks"
+              :key="i"
+              @click.stop="selectGoogleBook(item)"
+            >
+              <v-list-item-icon>
+                <v-icon>menu_book</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title v-text="item.title"></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-col>
+      <v-col class="pt-0">
+        <v-btn small fab icon @click.stop="previousPage">
+          <v-icon>chevron_left</v-icon>
+        </v-btn>
+      </v-col>
+      <v-col class="pt-0 text-right">
+        <v-btn small fab icon @click.stop="nextPage">
+          <v-icon>chevron_right</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
 
     <v-divider></v-divider>
 
@@ -101,6 +115,7 @@ export default {
     loading: false,
     showSearch: false,
     searchTerm: '',
+    searchIndex: 0,    
     googleBooks: [],
     item: 0,
     book: new Book()
@@ -119,10 +134,22 @@ export default {
     },
     searchGoogleBooks() {
       if (this.searchTerm) {
-        fetch(`https://www.googleapis.com/books/v1/volumes?q=${this.searchTerm}`)
+        fetch(`https://www.googleapis.com/books/v1/volumes?q=${this.searchTerm}&startIndex=${this.searchIndex}`)
           .then(res => res.json())
           .then(data => this.renderGoogleBooks(data.items))
           .catch(error => console.error(error));
+      }
+    },
+    nextPage() {
+      if (this.searchIndex >= 0) {
+        this.searchIndex += 10;
+        this.searchGoogleBooks();
+      }
+    },
+    previousPage() {
+      if (this.searchIndex >=0) {
+        this.searchIndex -= 10;
+        this.searchGoogleBooks();
       }
     },
     renderGoogleBooks(books) {
