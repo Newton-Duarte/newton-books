@@ -60,7 +60,7 @@
           </v-row>
           <v-list-item-group v-model="item" color="primary">
             <v-list-item
-              v-for="(item, i) in googleBooks"
+              v-for="(item, i) in formattedGoogleBooks"
               :key="i"
               @click.stop="selectGoogleBook(item)"
             >
@@ -69,6 +69,8 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title v-text="item.title"></v-list-item-title>
+                <span class="caption font-italic">{{ item.author }}</span>
+                <span class="caption font-italic">{{ item.publisher }}</span>
               </v-list-item-content>
             </v-list-item>
           </v-list-item-group>
@@ -78,6 +80,11 @@
         <v-btn small fab icon @click.stop="previousPage">
           <v-icon>chevron_left</v-icon>
         </v-btn>
+      </v-col>
+      <v-col align-self="center" class="pt-0 text-center">
+        <span class="caption">
+          {{ page }}/{{ Math.floor(totalItems/10) }}
+        </span>
       </v-col>
       <v-col class="pt-0 text-right">
         <v-btn small fab icon @click.stop="nextPage">
@@ -115,7 +122,10 @@ export default {
     loading: false,
     showSearch: false,
     searchTerm: '',
-    searchIndex: 0,    
+    lastSearchTerm: '',
+    searchIndex: 0,
+    totalItems: 0,
+    page: 1,
     googleBooks: [],
     item: 0,
     book: new Book()
@@ -127,48 +137,67 @@ export default {
       await this.createBook({ book: payload, uid: this.$store.getters.user.id });
       this.showSearch = false;
       this.searchTerm = '';
+      this.lastSearchTerm = '',
       this.googleBooks = [];
       this.book = new Book();
       this.drawer = false;
       this.loading = false;
     },
     searchGoogleBooks() {
-      if (this.searchTerm) {
+      if (this.searchTerm && this.searchTerm === this.lastSearchTerm) {
         fetch(`https://www.googleapis.com/books/v1/volumes?q=${this.searchTerm}&startIndex=${this.searchIndex}`)
           .then(res => res.json())
-          .then(data => this.renderGoogleBooks(data.items))
+          .then(data => this.renderGoogleBooks(data.items, data.totalItems))
+          .catch(error => console.error(error));
+      } else {
+        this.page = 1;
+        this.searchIndex = 0;
+        fetch(`https://www.googleapis.com/books/v1/volumes?q=${this.searchTerm}&startIndex=${this.searchIndex}`)
+          .then(res => res.json())
+          .then(data => this.renderGoogleBooks(data.items, data.totalItems))
           .catch(error => console.error(error));
       }
     },
     nextPage() {
-      if (this.searchIndex >= 0) {
+      if (this.searchIndex >= 0 && this.page < Math.round(this.totalItems/10)) {
         this.searchIndex += 10;
+        this.page += 1;
         this.searchGoogleBooks();
       }
     },
     previousPage() {
-      if (this.searchIndex >=0) {
+      if (this.searchIndex > 0) {
         this.searchIndex -= 10;
+        this.page -= 1;
         this.searchGoogleBooks();
       }
     },
-    renderGoogleBooks(books) {
+    renderGoogleBooks(books, totalItems) {
+      this.googleBooks = [];
       if (books !== undefined && books.length) {
-        this.googleBooks = [];
-        books.forEach(book => this.googleBooks.push(book.volumeInfo));
+        if (this.searchTerm === this.lastSearchTerm) {
+          books.forEach(book => this.googleBooks.push(book.volumeInfo));
+        } else {
+          books.forEach(book => this.googleBooks.push(book.volumeInfo));
+          this.totalItems = totalItems;
+        }
       } else {
         console.log('Nenhum registro encontrado.');
       }
+      // save the last term entered
+      this.lastSearchTerm = this.searchTerm;
     },
     selectGoogleBook(item) {
-      const { title, subtitle, authors, pageCount } = item;
-      this.book.title = title;
-      this.book.subtitle = subtitle || '';
-      this.book.author = authors[0];
-      this.book.pages = pageCount;
+      this.book.title = item.title;
+      this.book.subtitle = item.subtitle || '';
+      this.book.author = item.author;
+      this.book.pages = item.pages;
     },
     clearGoogleBooks() {
-      this.googleBooks = []
+      this.googleBooks = [];
+      this.searchIndex = 0;
+      this.page = 1;
+      this.totalItems = 0;
     },
     focusSearch() {
       if (!this.showSearch) {
@@ -179,6 +208,21 @@ export default {
       }
     }
   },
+  computed: {
+    formattedGoogleBooks() {
+      const books = [];
+      this.googleBooks.forEach(book => {
+        const formattedBook = new Book();
+        formattedBook.title = book.title;
+        formattedBook.subtitle = book.subtitle || '';
+        formattedBook.author = book.authors ? book.authors[0] : '';
+        formattedBook.pages = book.pageCount || 0;
+        formattedBook.publisher = book.publisher || '';
+        books.push(formattedBook);
+      })
+      return books;
+    }
+  }
 }
 </script>
 

@@ -24,7 +24,7 @@ export default {
   name: 'Books',
   data: () => ({
     drawerEdit: false,
-    filter: 'allBooks'
+    filter: 'favoriteBooks'
   }),
   components: {
     Book,

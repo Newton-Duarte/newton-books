@@ -31,7 +31,7 @@
 export default {
   name: 'FilterBooks',
   data: () => ({
-    activeFilter: 'Todos'
+    activeFilter: 'Favoritos'
   }),
   methods: {
     filterBooks(filter) {
